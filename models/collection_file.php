@@ -24,19 +24,118 @@ class CollectionFile extends AppModel {
         $this->_scan_dir($this->dir, $finfo);
     }
 
+    function generate_dmp($data = array()) {
+        $dmp = array();
+
+        if(empty($data)) return $dmp;
+        if(!is_array($data)) $data = array(array('path' => $data));
+
+        foreach($data as $dmp_item) {
+            if(!is_array($dmp_item))
+                $dmp_item = array('path' => $dmp_item);
+            if(!array_key_exists('hash', $dmp_item)) {
+                if(is_dir($dmp_item['path'])) {
+                    foreach(glob($dmp_item['path'].DIRECTORY_SEPARATOR.'*') as $file) {
+                        if( $fileData = $this->find('first', array(
+                                            'conditions' => array('path' => $file), // plugin_id too later
+                                            'fields' => array('hash')
+                                        ))) {
+                            $dmp[] = array(
+                                'hash' => $fileData['CollectionFile']['hash'],
+                                'tags' => $this->get_tags($file)
+                            );
+                        }
+                    }
+                } else {
+                    if( $fileData = $this->find('first', array(
+                                        'conditions' => array('path' => $dmp_item['path']), // plugin_id too later
+                                        'fields' => array('hash')
+                                    ))) {
+                        $dmp[] = array(
+                            'hash' => $fileData['CollectionFile']['hash'],
+                            'tags' => $this->get_tags($dmp_item['path'])
+                        );
+                    }
+                }
+            }
+        }
+
+        return(serialize($dmp));
+    }
+
+    function get_tags($path) {
+        App::import('Vendor', 'getid3/getid3/getid3');
+
+        $g3 = new getID3;
+        $tags = $g3->analyze($path);
+        getid3_lib::CopyTagsToComments($tags);
+
+        $tags = am(
+            array(
+                'bitrate' => $tags['audio']['bitrate'],
+                'length' => $tags['playtime_seconds']
+            ),
+            $tags['comments']
+        );
+
+        return $tags;
+    }
+
+    function write_tags($file, $data = array()) {
+        App::import('Vendor', 'getid3/getid3/getid3'); //getid3/getid3/getid3/getid3/getid3 ;)
+        $g3 = new getID3;
+        $g3->setOption(array('encoding'=>'UTF-8'));
+        App::import('Vendor', 'getid3/getid3/write');
+
+        $id3 = new getid3_writetags;
+        $id3->filename = $file;
+        $id3->tagformats = array('id3v1', 'id3v2.3');
+        $id3->overwrite_tags = true;
+        $id3->tag_encoding = 'UTF-8';
+        $id3->remove_other_tags = false;
+
+        $tags = array();
+        foreach($data as $key => $val) {
+            if(is_array($val)) {
+                foreach($val as $v) {
+                    $tags[$key][] = $v;
+                }
+            } else {
+                $tags[$key][] = $val;
+            }
+        }
+
+        $old_tags = $g3->analyze($file);
+        getid3_lib::CopyTagsToComments($old_tags);
+
+        $id3->tag_data = am($old_tags['comments'], $tags);
+
+        if($id3->WriteTags()) {
+            if(!empty($id3->warnings))
+                debug($id3->warnings);
+            return true;
+        } else {
+            debug($id3->errors);
+        }
+    }
+
     function _scan_dir($path = null, $finfo = null) {
         if(is_dir($path)) {
             foreach(glob($path.DIRECTORY_SEPARATOR.'*') as $file) {
                 if(filetype($file) == 'dir') $this->_scan_dir($file, $finfo);
-                else {
+                elseif( $this->find('count', array(
+                            'conditions' => array('path' => $file), // plugin_id too later
+                        )) == 0) {
                     $mime = finfo_file($finfo, $file);
-                    if($mime == 'audio/mpeg') {
+                    if($mime == 'audio/mpeg' || (strripos($file, ".mp3") == (strlen($file) - 4))) {
                         $hash = $this->_scan_mp3_file($file);
                         $cData = array('CollectionFile' => array('path' => $file, 'hash' => $hash));
                         $this->create($cData);
                         $this->save();
-//                        echo "{$file} => {$hash}\n";
+                        echo "{$file} => {$hash}\n";
                     }
+                } else {
+                    usleep(50000); // sleep 1/20 of a second to keep cpu usage low for re-scans
                 }
             }
         }
