@@ -1,6 +1,6 @@
 <?php
 
-class queueSearchTask extends Shell {
+class queueDownloadTask extends Shell {
 	public $uses = array('Queue.QueuedTask', 'CollectionFile', 'Peer');
 
 	public function run($data) {
@@ -11,19 +11,6 @@ class queueSearchTask extends Shell {
 
 		if($peer = $this->Peer->choosePeer($data)) {
 			$this->out(print_r($peer, true));
-
-			if(!array_key_exists('PeerTable', $data)) {
-				$data['PeerTable'] = array();
-
-				for($i=0; $i<40; $i++) {
-					if(rand(0,3) == 0) {
-						$data['PeerTable'][String::UUID()] = String::UUID();
-					}
-				}
-			} elseif(count($data['PeerTable']) > 64) {
-				return true; // end of teh road
-			}
-			$data['PeerTable']["MY_SECRET_ID"] = $peer['Peer']['id'];
 
 			App::import('Core', 'HttpSocket');
 			$HttpSocket = new HttpSocket();
@@ -56,8 +43,6 @@ class queueSearchTask extends Shell {
 						'Tag.entity_id' => $peer['Peer']['id']
 					)
 				);
-			} elseif($r = "have_file") {
-					// start rewinding packet
 			}
 			$this->out(print_r($res, true));
 			return true;
