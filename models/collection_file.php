@@ -18,6 +18,33 @@ class CollectionFile extends AppModel {
     );
 */
 
+    function getSample($file, $seq_begin = 0) {
+        $block_size = 65536;
+        $fp = fopen($file['CollectionFile']['path'], 'rb');
+
+        $offsets = $this->_mp3_data_offset($file['CollectionFile']['path']);
+
+        $seq_begin = $offsets[0] + $seq_begin;
+        $seq_end = $seq_begin + $block_size;
+        if($seq_end >= $offsets[1]) $block_size = $offsets[1] - $seq_begin;
+        fseek($fp, $offsets[0] + $seg_begin);
+
+        $data = fread($fp, $block_size);
+        fclose($fp);
+
+        return base64_encode($data);
+    }
+
+    function md5($file, $offset = 0) {
+        return md5($this->getSample($file, $offset));
+    }
+
+    function countFileSegments($file) {
+        $offsets = $this->_mp3_data_offset($file['CollectionFile']['path']);
+
+        return ceil(($offsets[1] - $offsets[0]) / 65536);
+    }
+
     function scan_collection() {
         $this->cacheQueries = false;
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -141,9 +168,8 @@ class CollectionFile extends AppModel {
         }
     }
 
-    function _scan_mp3_file($file = null) {
+    function _mp3_data_offset($file = null) {
         $fp = fopen($file, 'rb');
-        $ctx = hash_init('tiger128,3');
 
         $stat = fstat($fp);
         $eof = $stat['size'];
@@ -151,7 +177,7 @@ class CollectionFile extends AppModel {
         if(fread($fp, 3) == "ID3") $eof -= 128;
 
         fseek($fp, 0);
-        $pos = $sof = ftell($fp);
+        $sof = ftell($fp);
 
         if(fread($fp, 3) == "ID3") {
             $flags = unpack("C3", fread($fp, 3)); // [1:2] is version but we don't care
@@ -161,8 +187,21 @@ class CollectionFile extends AppModel {
             fseek($fp, $bsize);
             if($footer) fseek($fp, 10);
 
-            $pos = $sof = ftell($fp);
+            $sof = ftell($fp);
         }
+
+        fclose($fp);
+        return array($sof, $eof);
+    }
+
+    function _scan_mp3_file($file = null) {
+        $fp = fopen($file, 'rb');
+        $ctx = hash_init('tiger128,3');
+
+        $offsets = $this->_mp3_data_offset($file);
+
+        $sof = $pos = $offsets[0];
+        $eof = $offsets[1];
 
         fseek($fp, $pos);
         $hashed_data = 0;
@@ -191,6 +230,8 @@ class CollectionFile extends AppModel {
                 }
             }
         }
+
+        fclose($fp);
         $hash = hash_final($ctx);
         return $hash;
     }

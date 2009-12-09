@@ -19,6 +19,13 @@ class Peer extends AppModel {
 		)
 	);
 
+	function beforeSave(&$model, $options = array()) {
+        if (empty($this->id)) { // only generate id on create
+			$this->data['Peer']['id'] = $this->_genUUID();
+		}
+		return true;
+	}
+
 	function greet($peer_address = null, $peer_port = null, $data = array()) {
 		if(!$peer_address || !$peer_port) {
 			return true;
@@ -44,6 +51,14 @@ class Peer extends AppModel {
 
 		$res = $HttpSocket->request($req);
 		return(json_decode($res, true));
+	}
+
+	function _genUUID() {
+		mt_srand( intval( microtime( true ) * 1000 ) );
+		$b = md5( uniqid( mt_rand(), true ), true );
+		$b[6] = chr( ( ord( $b[6] ) & 0x0F ) | 0x40 );
+		$b[8] = chr( ( ord( $b[8] ) & 0x3F ) | 0x80 );
+		return implode( '-', unpack( 'H8a/H4b/H4c/H4d/H12e', $b ) );
 	}
 
 	function choosePeer($data) {
