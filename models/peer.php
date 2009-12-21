@@ -20,7 +20,7 @@ class Peer extends AppModel {
 	);
 
 	function beforeSave(&$model, $options = array()) {
-        if (empty($this->id)) { // only generate id on create
+		if (empty($this->id)) { // only generate id on create
 			$this->data['Peer']['id'] = $this->_genUUID();
 		}
 		return true;
@@ -64,16 +64,27 @@ class Peer extends AppModel {
 	function choosePeer($data) {
 		$peerFields = array('Peer.id', 'Peer.name', 'Peer.ip', 'Peer.port');
 
+		$peer_conditions = null;
+		if(!empty($data['peers'])) {
+			$peer_conditions = array('NOT' => array('Peer.id' => $data['peers']));
+		}
+
 		$peer = $this->Tag->find('first', array(
 					'fields' => $peerFields,
-					'conditions' => array('Tag.name' => $data['hash'], 'Tag.score >' => '0'),
+					'conditions' => am(
+						array('Tag.name' => $data['hash'], 'Tag.score >' => '0'),
+						$peer_conditions
+					),
 					'group' => 'Peer.id',
 					'order' => '(abs(RANDOM() / 36028797018963968 * SUM(Tag.score))) DESC'
 				));
 		if(empty($peer)) {
 			$peer = $this->Tag->find('first', array(
 						'fields' => $peerFields,
-						'conditions' => array('Tag.name' => $data['tags'], 'Tag.score >' => '0'),
+						'conditions' => am(
+							array('Tag.name' => $data['tags'], 'Tag.score >' => '0'),
+							$peer_conditions
+						),
 						'group' => 'Peer.id',
 						'order' => '(abs(RANDOM() / 36028797018963968 * SUM(Tag.score))) DESC',
 					));
@@ -81,7 +92,7 @@ class Peer extends AppModel {
 		if(empty($peer)) {
 			$peer = $this->find('first', array(
 						'fields' => $peerFields,
-						'conditions' => array('score > 0'),
+						'conditions' => am(array('score > 0'), $peer_conditions),
 						'order' => '(abs(RANDOM() / 36028797018963968 * Peer.score)) DESC',
 						'recursive' => 0,
 					));

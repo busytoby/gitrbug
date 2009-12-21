@@ -4,16 +4,52 @@ class queueDownloadTask extends Shell {
 	public $uses = array('Queue.QueuedTask', 'CollectionFile', 'Peer');
 
 	public function run($data) {
+		debug($data);
 		if(!$data['hash']) {
-			$this->err("Tried to run search without a hash!?");
+			$this->err("Nothing to download!?");
 			return true;
 		}
+		debug($data);
+		// check data['peers'] to see if we have any slots available
+		if(!empty($data['peers'])) {
+			if($this->__getDownloadSlot()) {
+//				$this->spawnDownloader($data);
+			}
+		}
 
+		if(!empty($data['finished'])) return true;
+
+		$this->QueuedTask->createJob('search', $data);
+//		return 1337; // requeue
+		return true;
+	}
+
+	function __getDownloadSlot() { // stub
+		return true;
+	}
+
+	function spawnDownloader($data) {
+		function thread_shutdown() { posix_kill(posix_getpid(), SIGHUP); }
+
+		if($pid = pcntl_fork()) return; // spawn to child process
+		fclose(STDIN); // close descriptors
+		fclose(STDOUT);
+		fclose(STDERR);
+
+		register_shutdown_function('thread_shutdown'); // zombie-proof
+
+		if(posix_setsid() < 0) return; // re-parent child to kernel
+		if($pid = pcntl_fork()) return; // now in daemonized downloader
+
+		// download stuff
+
+		return;
+	}
+
+/*
 		if($peer = $this->Peer->choosePeer($data)) {
 			$this->out(print_r($peer, true));
 
-			App::import('Core', 'HttpSocket');
-			$HttpSocket = new HttpSocket();
 			$req = array(
 				'method' => 'POST',
 				'uri' => array(
@@ -50,7 +86,6 @@ class queueDownloadTask extends Shell {
 			// discard silently
 			return true;
 		}
-	}
+*/
 }
-
 ?>

@@ -1,13 +1,17 @@
 <?php
 
 class queueSearchTask extends Shell {
-	public $uses = array('Queue.QueuedTask', 'CollectionFile', 'Peer');
+	public $uses = array('Queue.QueuedTask', 'CollectionFile', 'Peer', 'Setting');
 
 	public function run($data) {
 		if(!$data['hash']) {
 			$this->err("Tried to run search without a hash!?");
+			debug($data);
 			return true;
 		}
+		debug($data);
+		$my_id = $this->Setting->getPrivateId();
+		debug($my_id);
 
 		if($peer = $this->Peer->choosePeer($data)) {
 			$this->out(print_r($peer, true));
@@ -23,7 +27,8 @@ class queueSearchTask extends Shell {
 			} elseif(count($data['PeerTable']) > 64) {
 				return true; // end of teh road
 			}
-			$data['PeerTable']["MY_SECRET_ID"] = $peer['Peer']['id'];
+			$my_id = $this->Setting->getPrivateId();
+			$data['PeerTable'][$my_id] = $peer['Peer']['id'];
 
 			App::import('Core', 'HttpSocket');
 			$HttpSocket = new HttpSocket();

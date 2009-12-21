@@ -87,9 +87,8 @@ class PeersController extends AppController {
 			} else {
 				$chunk = rand($min, $max);
 				$chunk_start = $chunk * 65536;
-
-				$file['CollectionFile']['Sample']['offset'] = $chunk_start;
-				if(array_key_exists('send_file', $reqData) && $reqData['send_file'] == true) {
+				if(array_key_exists('send', $reqData) && $reqData['send'] == true) {
+					$file['CollectionFile']['Sample']['offset'] = $chunk_start;
 //					$job = $this->QueuedTask->createJob('upload', array($file), '+5 Minutes');
 
 //					while($this->QueuedTask->getLength('upload') > 6) {
