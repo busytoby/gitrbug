@@ -26,10 +26,8 @@ class PeersControllerTest extends CakeTestCase {
 	function testRequestFile() {
 		$data = array(
 			'hash' => 'f93b1cc0dd5b5a634ace4c662190a566',
-			'segments' => array(
-				array(0,117)
-			),
-			'send_file' => true
+			'segments' => array(array(0,119)),
+			'send' => true
 		);
 
 		$result = $this->testAction('/peers/request_file', array(
@@ -38,9 +36,19 @@ class PeersControllerTest extends CakeTestCase {
 				  ));
 
 		Configure::write('debug', 1);
-
-		debug($result);
+		debug(json_decode($result, true));
 	}
 
+	function testDownloadFile() {
+		$data = array(
+			'hash' => 'f93b1cc0dd5b5a634ace4c662190a566',
+			'tags' => array(),
+			'target' => '/tmp/gitrtest.mp3'
+		);
+
+		App::import('Model', 'Queue.QueuedTask');
+		$this->QueuedTask =& ClassRegistry::init('QueuedTask');
+		$this->QueuedTask->createJob('download', $data);
+	}
 }
 ?>
