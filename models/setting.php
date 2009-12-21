@@ -5,25 +5,25 @@ class Setting extends AppModel {
 
 	function getPrivateId() {
 		Configure::load('gitrbug');
-		$id_s = Configure::read('gitrbug.secrets');
+		$id_n = Configure::read('gitrbug.num_secrets');
+		Configure::load('gitrbug_secrets');
+		$id_s = Configure::read('gitrbug_s.secrets');
 
-		debug($id_s);
+		$id_a = unserialize(stripslashes($id_s));
 
-		if(empty($id_s)) $id_s = array('Setting' => array('value' => ''));
-
-		$id_a = unserialize($id_s['Setting']['value']);
-
-		debug($id_a);
-
-		if(count($id_a) < 10) {
+		if(count($id_a) < $id_n) {
 			App::Import('Model', 'Peer');
 			$peerModel =& ClassRegistry::init('Peer');
-			while(count($id_a) < 10) {
+			while(count($id_a) < $id_n) {
 				$id_a[] = $peerModel->_genUUID();
 			}
-			$this->
+			Configure::write('gitrbug_s.secrets', serialize($id_a));
+			Configure::store('gitrbug', 'gitrbug_secrets', Configure::read('gitrbug_s'));
 		}
-		return $id;
+
+		$id_x = rand(0,$id_n - 1);
+
+		return $id_a[$id_x];
 	}
 }
 ?>

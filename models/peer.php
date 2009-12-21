@@ -64,7 +64,7 @@ class Peer extends AppModel {
 	function choosePeer($data) {
 		$peerFields = array('Peer.id', 'Peer.name', 'Peer.ip', 'Peer.port');
 
-		$peer_conditions = null;
+		$peer_conditions = array('1=1');
 		if(!empty($data['peers'])) {
 			$peer_conditions = array('NOT' => array('Peer.id' => $data['peers']));
 		}
@@ -78,7 +78,7 @@ class Peer extends AppModel {
 					'group' => 'Peer.id',
 					'order' => '(abs(RANDOM() / 36028797018963968 * SUM(Tag.score))) DESC'
 				));
-		if(empty($peer)) {
+		if(empty($peer) && !empty($data['tags'])) {
 			$peer = $this->Tag->find('first', array(
 						'fields' => $peerFields,
 						'conditions' => am(

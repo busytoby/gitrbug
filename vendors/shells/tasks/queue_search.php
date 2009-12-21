@@ -9,9 +9,8 @@ class queueSearchTask extends Shell {
 			debug($data);
 			return true;
 		}
-		debug($data);
-		$my_id = $this->Setting->getPrivateId();
-		debug($my_id);
+
+		debug($this->Peer->choosePeer($data));
 
 		if($peer = $this->Peer->choosePeer($data)) {
 			$this->out(print_r($peer, true));
@@ -21,14 +20,16 @@ class queueSearchTask extends Shell {
 
 				for($i=0; $i<40; $i++) {
 					if(rand(0,3) == 0) {
-						$data['PeerTable'][String::UUID()] = String::UUID();
+						$data['PeerTable'][$this->Peer->_genuuid()] = $this->Peer->_genuuid();
 					}
 				}
 			} elseif(count($data['PeerTable']) > 64) {
 				return true; // end of teh road
 			}
+
 			$my_id = $this->Setting->getPrivateId();
 			$data['PeerTable'][$my_id] = $peer['Peer']['id'];
+			asort($data['PeerTable']);
 
 			App::import('Core', 'HttpSocket');
 			$HttpSocket = new HttpSocket();
@@ -61,9 +62,8 @@ class queueSearchTask extends Shell {
 						'Tag.entity_id' => $peer['Peer']['id']
 					)
 				);
-			} elseif($r = "have_file") {
-					// start rewinding packet
 			}
+
 			$this->out(print_r($res, true));
 			return true;
 		} else {

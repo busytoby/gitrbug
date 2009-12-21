@@ -1,5 +1,5 @@
 <?php
 $config['gitrbug']['username'] = 'busytoby';
-$config['gitrbug']['secrets'] = array();
+$config['gitrbug']['num_secrets'] = 10;
 
 ?>
