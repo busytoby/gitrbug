@@ -15,6 +15,7 @@ class SettingTestCase extends CakeTestCase {
 		$this->assertTrue(is_a($this->Setting, 'Setting'));
 	}
 
+/*
 	function testSettingFind() {
 		$this->Setting->recursive = -1;
 		$results = $this->Setting->find('first');
@@ -27,5 +28,10 @@ class SettingTestCase extends CakeTestCase {
 		));
 		$this->assertEqual($results, $expected);
 	}
+*/
+
+    function testSettingUpdateMyIP() {
+        $this->Setting->updateMyIP();
+    }
 }
 ?>

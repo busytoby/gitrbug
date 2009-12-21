@@ -108,12 +108,6 @@ class PeersController extends AppController {
 		$this->render();
 	}
 
-	function ts() {
-		debug(json_decode('{"data":{"hash":"41ea9fab8a","tags":["test1","test4"]}}', true));
-		$this->QueuedTask->createJob('search', array('hash' => '41ea9fab8a', 'tags' => array('test1', 'test4')));
-		exit();
-	}
-
 	function search() {
 		$this->layout = false;
 		Configure::write('debug', '0');

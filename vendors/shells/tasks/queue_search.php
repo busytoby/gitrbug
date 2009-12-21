@@ -10,7 +10,10 @@ class queueSearchTask extends Shell {
 			return true;
 		}
 
-		debug($this->Peer->choosePeer($data));
+		if(!array_key_exists('from', $data)) {
+			Configure::load('gitrbug');
+			$data['from'] = array('host' => $this->Setting->readIP(), 'port' => Configure::read('gitrbug.port'));
+		}
 
 		if($peer = $this->Peer->choosePeer($data)) {
 			$this->out(print_r($peer, true));
@@ -63,7 +66,7 @@ class queueSearchTask extends Shell {
 					)
 				);
 			}
-
+			debug($data);
 			$this->out(print_r($res, true));
 			return true;
 		} else {
