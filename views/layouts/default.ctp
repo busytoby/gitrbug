@@ -26,8 +26,18 @@
 		echo $html->css('960/text');
 		echo $html->css('960/960');
         echo $html->css('gitrbug');
+        echo $javascript->link('/js/jquery');
 		echo $scripts_for_layout;
 	?>
+    <script type="text/javascript">
+        function cli_key(e) {
+            alert("foo");
+        }
+
+        $(document).ready(function() {
+            $('#cli').bind('keyup', function(e) { cli_key(e); });
+        });
+    </script>
 </head>
 <body>
 	<div id="container">
