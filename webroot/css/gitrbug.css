@@ -1,0 +1,33 @@
+html,body, #container { 
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.cli_box {
+    background-color: #000;
+    color: #CCC;
+    height: 90%;
+}
+
+div#footer {
+    text-align: right;
+}
+
+.cl_buffer {
+    height: 100%;
+}
+
+.cl_input {
+    width: 100%;
+    height: 70px;
+    margin-top: -35px;
+    clear: both;
+}
+
+#cli { 
+    width: 97%;
+    background-color: #000;
+    color: #AAA;
+    border: none;
+}
