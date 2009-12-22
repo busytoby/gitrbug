@@ -45,32 +45,23 @@
             <div id="cl_header" class="grid_12">cl_h</div>
             <div class="clear"></div>
 
-            <div id="cl_bleft" class="grid_1">cl_bl</div>
+            <div id="cl_bleft" class="grid_1"><div id="cl_bleft_spacer"></div></div>
             <div id="cl_buffer" class="grid_10">
-                preb
                 <?php echo $content_for_layout; ?>
-                postb
             </div>
-            <div id="cl_bright" class="grid_1">cl_br</div>
+            <div id="cl_bright" class="grid_1"><div id="cl_bright_spacer"></div></div>
             <div class="clear"></div>
 
-            <div id="cl_fleft" class="grid_1">cl_fl</div>
-            <div id="cl_flash" class="grid_6">
-                pref
-                <?php $session->flash(); ?>
-                postf
-            </div>
-            <div id="cl_fright" class="grid_5">cl_fr</div>
+            <div id="cl_fleft" class="grid_1"></div>
+            <div id="cl_flash" class="grid_6"><?php $session->flash(); ?></div>
+            <div id="cl_fright" class="grid_5"></div>
             <div class="clear"></div>
 
-            <div id="cl_ileft" class="grid_3">cl_il</div>
-            <div id="cl_input" class="grid_7">
-<!--
-                <label for="cli">>&nbsp;&nbsp;</label>
--->
+            <div id="cl_ileft" class="grid_2"></div>
+            <div id="cl_input" class="grid_8">
                 <input id="cli" type="text" name="input" />
             </div>
-            <div id="cl_iright" class="grid_2">cl_ir</div>
+            <div id="cl_iright" class="grid_2"></div>
 
 		</div>
 <!--

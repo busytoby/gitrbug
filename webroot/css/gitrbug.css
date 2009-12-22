@@ -26,9 +26,19 @@ div#footer {
     border: none;
 }
 
+#cl_bright, #cl_fright, #cl_iright {
+    text-align: right;
+}
+
 #cl_bleft,#cl_bright,#cl_buffer,#cl_header,
 #cl_fleft,#cl_fright,#cl_flash,#cl_ileft,#cl_iright,
 #cl_input {
-    border: 1px solid white;
-    margin: 8px;
+//    border: 1px solid white;
+//    margin: 8px;
+}
+
+pre { 
+    margin:0;
+    padding:0;
+    bottom:0;
 }
