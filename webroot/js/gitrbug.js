@@ -21,10 +21,30 @@ function decorate() {
         ')-._,-—´˙`—._,+´  '
     ];
 
+    banner = [
+        '##         .db .d8                .d8                         ',
+        '#          dP" d88                d88                         ',
+        '#              888.               888.                        ',
+        '#  .d88b.  .d8 88888P   .d8d88b   88888b.  .d8  .d8   .d88b.  ',
+        '# d88P"88b d88 88P"     d88P"     888 "88b 888  d88  d88P"88b ',
+        '# 888  888 888 888      888       888  888 888  888  888  888 ',
+        '# Y88b 888 888 Y88b.    888       Y88 d88P Y88b d88. Y88b 888 ',
+        '#  "Y88888 8P"  "Y88b   8P"       "Y888P"   "Y88888b. "Y88888 ',
+        '#      888                                                888 ',
+        '# Y8b d88P                                           Y8b d88P ',
+        '#  "Y88P"                                             "Y88P"  '
+    ];
+
     $('pre').remove();
 
     fill_height = $('#cl_bleft').height();
 
+    /*
+    $(banner).each(function (s) {
+                       $('#cl_header').append('<pre>' + banner[s] + '</pre>');
+                   });
+    */
+    
     $(head).each(function (s) {
                      $('#cl_bleft').append('<pre>' + head[s] + '</pre>');
                      $('#cl_bright').append('<pre>' + head[s] + '</pre>');

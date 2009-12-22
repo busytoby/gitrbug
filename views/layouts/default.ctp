@@ -42,7 +42,7 @@
 -->
 		<div id="content" class="container_12 cli_box">
 
-            <div id="cl_header" class="grid_12">cl_h</div>
+            <div id="cl_header" class="grid_12"></div>
             <div class="clear"></div>
 
             <div id="cl_bleft" class="grid_1"><div id="cl_bleft_spacer"></div></div>
