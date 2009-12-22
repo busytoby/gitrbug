@@ -30,15 +30,6 @@
 		echo $javascript->link('gitrbug');
 		echo $scripts_for_layout;
 	?>
-    <script type="text/javascript">
-        function cli_key(e) {
-            $('#cl_flash').textContent = e.keyCode;
-        }
-
-        $(document).ready(function() {
-            $('#cli').bind('keyup', function(e) { cli_key(e); });
-        });
-    </script>
 </head>
 <body>
 	<div id="container">
