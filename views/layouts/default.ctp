@@ -27,6 +27,7 @@
 		echo $html->css('960/960');
 		echo $html->css('gitrbug');
 		echo $javascript->link('/js/jquery');
+        echo $javascript->link('/js/jquery.mousewheel');
 		echo $javascript->link('gitrbug');
 		echo $scripts_for_layout;
 	?>

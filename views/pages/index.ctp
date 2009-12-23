@@ -1,5 +1,4 @@
 <?php
-echo "<p>error: No OS FOUND!@?#</p>\n";
 
 /** test mp3 read/hash/write
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '/home/jas/src/gitrbug/vendors/php-reader/src');

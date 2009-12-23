@@ -7,19 +7,15 @@ function decorate() {
 
     repeat = [
         '( ; '  ,
-        ',´ ;'  ,
+        ',´  '  ,
         '`,´ '
     ];
 
-    foot_l = [
-        '( `+._,—(',
-        ' `+._,—´˙`—-._,— -('
-    ];
+    foot_fl = ['( `+._,—('];
+    foot_il = [' `+._,—´˙`—-._,— -('];
 
-    foot_r = [
-        ')-- -- —, _ .- —` ˙ ´+ —, _ .- —´˙ `—, _ .+´ ) ',
-        ')-._,-—´˙`—._,+´  '
-    ];
+    foot_fr = [')-- -- —, _ .- —` ˙ ´+ —, _ .- —´˙ `—, _ .+´ ) '];
+    foot_ir = [')-._,-—´˙`—._,+´  '];
 
     banner = [
         '         .db  .d8            .d8                        ',
@@ -37,7 +33,7 @@ function decorate() {
 
     $('pre').remove();
 
-    fill_height = $('#cl_bleft').height();
+    buffer_height = $('#cl_bleft').height();
 
     $(banner).each(function (s) {
                        $('#cl_header').append('<pre>' + banner[s] + '</pre>');
@@ -53,7 +49,7 @@ function decorate() {
     cur_height = sec_height;
 
     r_secs = 0;
-    while(cur_height + sec_height < (fill_height - (3 * sec_height)) && r_secs < 5) {
+    while(cur_height + sec_height < (buffer_height - (3 * sec_height)) && r_secs < 5) {
         cwrite(repeat, '#cl_bleft');
         cwrite(repeat, '#cl_bright');
         cur_height += sec_height;
@@ -61,19 +57,19 @@ function decorate() {
     }
     cur_height_left = cur_height;
 
-    while(cur_height + sec_height < fill_height && r_secs < 9) {
+    while(cur_height + sec_height < buffer_height && r_secs < 9) {
         cwrite(repeat, '#cl_bright');
         cur_height += sec_height;
         r_secs++;
     }
 
-    $('#cl_bleft_spacer').height(fill_height - cur_height_left);
-    $('#cl_bright_spacer').height(fill_height - cur_height);
+    $('#cl_bleft_spacer').height(buffer_height - cur_height_left);
+    $('#cl_bright_spacer').height(buffer_height - cur_height);
 
-    $('#cl_fleft').append('<pre>' + foot_l[0] + '</pre>');
-    $('#cl_ileft').append('<pre>' + foot_l[1] + '</pre>');
-    $('#cl_fright').append('<pre>' + foot_r[0] + '</pre>');
-    $('#cl_iright').append('<pre>' + foot_r[1] + '</pre>');
+    cwrite(foot_fl, '#cl_fleft');
+    cwrite(foot_il, '#cl_ileft');
+    cwrite(foot_fr, '#cl_fright');
+    cwrite(foot_ir, '#cl_iright');
 
     if($('#cl_flash').text() == '') $('#cl_flash').text('hit tab to grab input');
 
@@ -91,10 +87,9 @@ cw_colors = {
     "FFF7CB": ['FFF7B8','FFFA73','FFD1BA','D0DEDD','FFFFFF','FFF7CB'], // 10
     "FFFA73": ['FFF7CB','FFFFFF','FFA100','FFFA73'], // 11
     "FFFFFF": ['FFFA73','D0DEDD','DEEDD0','FFF7CB','FFFFFF'] // 12
-
 }
-color = 'FFFFFF';
 
+color = 'FFFFFF';
 function cwrite(data, target) {
     cline = '';
 
@@ -119,12 +114,52 @@ function cwrite(data, target) {
     $(target).append(cline);
 }
 
-function test() {
-
-}
-
 function cli_key(e) {
     $('#cl_flash').text(e.keyCode);
+
+    switch(e.keyCode) {
+        case 13: // enter
+//            buf_out($('#cli').val());
+            $.post('/peers/cmd', { data: $('#cli').val() }, function(r) {
+                       $('#cl_buffer').append('<p>' + r + '</p>');
+                   }, 'json');
+            $('#cli').val('');
+            break;
+    } // pass everything else
+}
+
+buffer_height = 0;
+scroll_position = 0;
+
+function buf_out(s) {
+    $('#cl_buffer').append("<p>" + s + "</p>");
+    if(scroll_position) $('#cl_buffer').children().last().hide();
+    refresh_buffer();
+}
+
+function refresh_buffer() {
+    c = $('#cl_buffer').children();
+    i = c.length - scroll_position;
+    if(i >= c.length) i = c.length-1;
+    h = 0;
+
+    while(i >= 0) {
+        while(c.length - i <= scroll_position) {
+            $(c[i]).hide();
+            i = i-1;
+        }
+
+        if((h = h+$(c[i]).height()) < buffer_height) {
+            $(c[i]).show();
+            i = i-1;
+        } else {
+            while(i >= 0) {
+                if($(c[i]).css('display') == "none") return true;
+                $(c[i]).hide();
+                i = i-1;
+            }
+        }
+    }
 }
 
 $(document).ready(function() {
@@ -132,7 +167,18 @@ $(document).ready(function() {
                        cli_key(e);
                    });
     decorate();
+    $('#cl_buffer').bind('mousewheel', function(e, d) {
+                             mdir = d>0?1:-1;
+                             scroll_position = scroll_position + mdir;
+                             mscroll = $('#cl_buffer').children(':hidden').length;
+                             if(scroll_position < 0) scroll_position = 0;
+                             if(scroll_position > mscroll) scroll_position = mscroll;
+                             refresh_buffer();
+                             return false;
+                         });
     $(window).resize(function() {
                          decorate();
                      });
+    $('#cli').focus();
+    $('#cli').blur(function () { $(this).focus(); } );
 });

@@ -139,6 +139,15 @@ class PeersController extends AppController {
 		}
 	}
 
+	function cmd() {
+        $this->layout = null;
+		Configure::write('debug', 0);
+		if($this->data == 'gitrbug') echo json_encode("What exactly do you know about gitrbug?");
+		elseif($this->data == 'help') echo json_encode("I really wish I could.");
+        else echo json_encode("Sorry, I don't know how to {$this->data}");
+        exit;
+	}
+
 	function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Peer.', true));

@@ -57,10 +57,9 @@ div#footer {
 //    margin: 8px;
 }
 
-pre { 
+pre,p { 
     margin:0;
     padding:0;
-    bottom:0;
     line-height: 110%;
 }
 
@@ -68,6 +67,14 @@ pre {
     font-size: xx-small;
     line-height: 75%;
     color:#FFA100;
+}
+
+#cl_buffer {
+    overflow:hidden;
+}
+
+#cl_buffer > p {
+    line-height: 140%;
 }
 
 #top_spacer {
