@@ -18,17 +18,17 @@ function decorate() {
     foot_ir = [')-._,-—´˙`—._,+´  '];
 
     banner = [
-        '         .db  .d8            .d8                        ',
-        '         dP"  d88            d88                        ',
-        '         "    888.           888.                       ',
-        '  .d88b.  .d8 88888P .d8d88b 88888b.  .d8  .d8  .d88b.  ',
-        ' d88P"88b d88 88P"   d88P"   888 "88b 888  d88 d88P"88b ',
-        ' 888  888 888 888    888     888 .888 888. 888 888  888 ',
-        ' Y88b 888 888 Y88b.  888     Y88 d88P Y88b d88.Y88b 888 ',
-        '  "Y88888 8P"  "Y88b 8P"     "Y888P"   "Y88888b."Y88888 ',
-        '     "888                                          "888 ',
-        ' Y8b.d88P                                      Y8b.d88P ',
-        '  "Y88P"                                        "Y88P"  '
+        '          ,db .d8            .d8                        ',
+        '          d8b d83            d83                        ',
+        '          "   834.           834.                       ',
+        '  .d83b.  .d8 83438P .d8d83b 83438b.  .d8  .d8  .d83b.  ',
+        ' d83P"38b d83 83P"   d83P"   834 "83b 834  d83 d83P"83b ',
+        ' 834  438 834 834    834     834 .834 834. 834 834  834 ',
+        ' Y83b 438 Y83 Y83b.  834     Y83 d83P Y83b d83.Y83b 834 ',
+        '  "Y83438 "Y8  "Y83b 8P"     "Y834P"  "Y834438b."Y83438 ',
+        '     "834                               """"       "834 ',
+        ' Y8b.d83P                                      Y8b.d83P ',
+        '  "Y83P"                                        "Y83P"  '
     ];
 
     $('pre').remove();
@@ -39,23 +39,28 @@ function decorate() {
                        $('#cl_header').append('<pre>' + banner[s] + '</pre>');
                    });
 
-    cwrite(head, '#cl_bright');
-
     $(head).each(function (s) {
                      $('#cl_bleft').append('<pre>' + head[s] + '</pre>');
                  });
 
     sec_height = $('#cl_bleft').children('pre').height() * 3;
     cur_height = sec_height;
+    cwrite(foot_fl, '#cl_fleft');
+    cwrite(foot_il, '#cl_ileft');
+
+    cwrite(head, '#cl_bright');
 
     r_secs = 0;
     while(cur_height + sec_height < (buffer_height - (3 * sec_height)) && r_secs < 5) {
         cwrite(repeat, '#cl_bleft');
-        cwrite(repeat, '#cl_bright');
         cur_height += sec_height;
         r_secs++;
     }
     cur_height_left = cur_height;
+
+    for(i=0; i<r_secs; i++) {
+        cwrite(repeat, '#cl_bright');
+    }
 
     while(cur_height + sec_height < buffer_height && r_secs < 9) {
         cwrite(repeat, '#cl_bright');
@@ -66,8 +71,6 @@ function decorate() {
     $('#cl_bleft_spacer').height(buffer_height - cur_height_left);
     $('#cl_bright_spacer').height(buffer_height - cur_height);
 
-    cwrite(foot_fl, '#cl_fleft');
-    cwrite(foot_il, '#cl_ileft');
     cwrite(foot_fr, '#cl_fright');
     cwrite(foot_ir, '#cl_iright');
 
