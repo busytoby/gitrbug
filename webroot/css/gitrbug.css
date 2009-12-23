@@ -1,14 +1,34 @@
+/**
+ *  COLORS:
+ *  there are 13 of them.
+ *  they are:
+ *
+ *  #000000
+ *  #34D1B2
+ *  #5ED1BA
+ *  #A66900
+ *  #D0DEDD
+ *  #DEEDD0
+ *  #F30021
+ *  #FFA100
+ *  #FFD1BA
+ *  #FFF7B8
+ *  #FFF7CB
+ *  #FFFA73
+ *  #FFFFFF
+ **/
+
+
 html,body, #container {
     margin: 0;
     padding: 0;
     height: 100%;
     background-color: #000;
-    border: 1px white;
 }
 
 .cli_box {
-    color: #CCC;
-    height: 90%;
+    color: #FFF;
+    height: 70%;
 }
 
 div#footer {
@@ -22,7 +42,7 @@ div#footer {
 #cli {
     width:100%;
     background-color: #000;
-    color: #AAA;
+    color: #FFFA73;
     border: none;
 }
 
@@ -30,7 +50,7 @@ div#footer {
     text-align: right;
 }
 
-#cl_bleft,#cl_bright,#cl_buffer,#cl_header,
+#cl_bleft,#cl_bright,#cl_buffer,#cl_header,#cl_hdrleft,
 #cl_fleft,#cl_fright,#cl_flash,#cl_ileft,#cl_iright,
 #cl_input {
 //    border: 1px solid white;
@@ -41,4 +61,15 @@ pre {
     margin:0;
     padding:0;
     bottom:0;
+    line-height: 110%;
+}
+
+#cl_header > pre {
+    font-size: xx-small;
+    line-height: 75%;
+    color:#FFA100;
+}
+
+#top_spacer {
+    height: 6%;
 }

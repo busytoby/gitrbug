@@ -1,13 +1,5 @@
 <?php
-echo '<h2>';
-echo __('Welcome to Gitrbug!');
-echo '</h2>';
-
-if (Configure::read() > 0):
-	Debugger::checkSessionKey();
-endif;
-
-echo __("Listening on {$_SERVER["SERVER_NAME"]}:{$_SERVER["SERVER_PORT"]}");
+echo "<p>error: No OS FOUND!@?#</p>\n";
 
 /** test mp3 read/hash/write
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '/home/jas/src/gitrbug/vendors/php-reader/src');
