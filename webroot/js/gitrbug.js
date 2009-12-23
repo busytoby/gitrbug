@@ -12,9 +12,9 @@ function decorate() {
     ];
 
     foot_fl = ['( `+._,—('];
-    foot_il = [' `+._,—´˙`—-._,— -('];
+    foot_il = [' `+._,—´˙`— —._,—-('];
 
-    foot_fr = [')-- -- —, _ .- —` ˙ ´+ —, _ .- —´˙ `—, _ .+´ ) '];
+    foot_fr = [')-—._,-—´˙`—._,-—˙`+—._,-—´˙`-._,—-´˙`—._,+´ ) '];
     foot_ir = [')-._,-—´˙`—._,+´  '];
 
     banner = [
@@ -121,7 +121,7 @@ function cli_key(e) {
         case 13: // enter
 //            buf_out($('#cli').val());
             $.post('/peers/cmd', { data: $('#cli').val() }, function(r) {
-                       $('#cl_buffer').append('<p>' + r + '</p>');
+                       buf_out(r);
                    }, 'json');
             $('#cli').val('');
             break;
@@ -133,7 +133,7 @@ scroll_position = 0;
 
 function buf_out(s) {
     $('#cl_buffer').append("<p>" + s + "</p>");
-    if(scroll_position) $('#cl_buffer').children().last().hide();
+    if(scroll_position > 0) $('#cl_buffer').children().last().hide();
     refresh_buffer();
 }
 

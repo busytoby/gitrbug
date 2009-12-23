@@ -39,13 +39,6 @@ div#footer {
     height: 100%;
 }
 
-#cli {
-    width:100%;
-    background-color: #000;
-    color: #FFFA73;
-    border: none;
-}
-
 #cl_bright, #cl_fright, #cl_iright {
     text-align: right;
 }
@@ -67,6 +60,23 @@ pre,p {
     font-size: xx-small;
     line-height: 75%;
     color:#FFA100;
+}
+
+#cl_flash {
+    line-height:110%;
+    text-align:right;
+    padding-bottom:1px;
+}
+
+#cl_flash {
+    
+}
+
+#cli {
+    width:100%;
+    background-color: #000;
+    color: #FFFA73;
+    border: none;
 }
 
 #cl_buffer {
