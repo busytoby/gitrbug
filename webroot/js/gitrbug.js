@@ -117,20 +117,57 @@ function cwrite(data, target) {
     $(target).append(cline);
 }
 
-function cli_key(e) {
-    $('#cl_flash').text(e.keyCode);
+function handle_key(e) {
+    $('#cl_flash').text(e.which);
 
-    switch(e.keyCode) {
-        case 13: // enter
-//            buf_out($('#cli').val());
-            $.post('/peers/cmd', { data: $('#cli').val() }, function(r) {
-                       buf_out(r);
-                   }, 'json');
-            $('#cli').val('');
-            break;
-    } // pass everything else
+    if(e.ctrlKey) {
+//        alert('hotkeys not implemented yet');
+    } else {
+        switch(e.which) {
+            case 13:
+                if("#" + e.target.id == input) {
+                    $.post(input_cmd, { data: $(input).val() }, function(r) {
+                        if(r.clear) {
+                            $('#cl_buffer').empty();
+                        }
+                        if(r.method) {
+
+                        }
+                        if(r.flash) {
+                            $('#cl_flash').empty();
+                            $('#cl_flash').append(r.flash);
+                        }
+                        if(r.text) {
+                            buf_out(r.text);
+                        }
+                    }, 'json');
+                    $('#cli').val('');
+                }
+                break;
+            case 8: // BACKSPACE
+//                $(input).val($(input).val().substr(0, $(input).val().length-1));
+//                return false;
+                break;
+            case 37: // LEFT
+            case 38: // UP
+            case 39: // RIGHT
+            case 40: // DOWN
+                return true;
+                break;
+            default:
+/*
+                if("#" + e.target.id != input) {
+                    $(input).val($(input).val() + String.fromCharCode(e.which));
+                }
+*/
+                break;
+        } // pass everything else
+        return true;
+    }
 }
 
+input = '#cli';
+input_cmd = '/peers/cmd';
 buffer_height = 0;
 scroll_position = 0;
 
@@ -166,9 +203,8 @@ function refresh_buffer() {
 }
 
 $(document).ready(function() {
-    $('#cli').bind('keyup', function(e) {
-                       cli_key(e);
-                   });
+    $(document).bind('keypress', handle_key);
+
     decorate();
     $('#cl_buffer').bind('mousewheel', function(e, d) {
                              mdir = d>0?1:-1;
@@ -182,6 +218,4 @@ $(document).ready(function() {
     $(window).resize(function() {
                          decorate();
                      });
-    $('#cli').focus();
-    $('#cli').blur(function () { $(this).focus(); } );
 });

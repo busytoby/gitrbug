@@ -140,12 +140,80 @@ class PeersController extends AppController {
 	}
 
 	function cmd() {
-        $this->layout = null;
+		$this->layout = null;
 		Configure::write('debug', 0);
-		if($this->data == 'gitrbug') echo json_encode("What exactly do you know about gitrbug?");
-		elseif($this->data == 'help') echo json_encode("I really wish I could.");
-        else echo json_encode("Sorry, I don't know how to {$this->data}");
-        exit;
+		$argv = explode(' ', $this->data);
+		$cmd = array_shift($argv);
+		if(method_exists($this, "__cmd_{$cmd}")) {
+			$function = '__cmd_' . $cmd;
+			echo json_encode($this->$function($argv));
+		} else {
+			echo json_encode(array('text' => "Sorry, I don't know how to {$cmd} " . implode(' ', $argv)));
+		}
+		exit;
+	}
+
+    function __cmd_pony($argv = array()) {
+        $ponyText = "<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        o
+                               o       /
+                                \     /
+                                 \   /
+                                  \ /
+                    +--------------v-------------+
+                    |  __________________      @ |
+                    | /                  \       |  GET ME THE FUCK
+                    | |             ,--, |  (\)  |  OUT OF HERE
+                    | |       _ ___/ /\| |       |
+                    | |   ,;`( )__, )  ~ |  (-)  |
+                    | |  //  //   '--;   |       |
+                    | \  '  -\     |    /  :|||: |
+                    |  -oo---------------  :|||: |
+                    +----------------------------+
+                       []                    []
+
+
+
+</pre>";
+
+        return array('text' => $ponyText, 'clear' => true, 'flash' => 'ponies are awesome!');
+    }
+
+	function __cmd_help($argv = array()) {
+		$helpText = "<pre>
+
+
+                    help                    - show this very informative message
+                    settings                - show settings menu
+                    set (var) (value)       - apply a new setting
+
+
+</pre>";
+
+		return array('text' => $helpText, 'clear' => true);
+	}
+
+	function __cmd_set($argv = array()) {
+		if(count($argv) != 2) {
+			$str = "Set takes exactly two args";
+		} else {
+			$str = "What exactly do you know about gitrbug?";
+		}
+		return array('text' => $str);
 	}
 
 	function view($id = null) {
