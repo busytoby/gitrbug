@@ -3,7 +3,7 @@ class PeersController extends AppController {
 
 	var $name = 'Peers';
 	var $helpers = array('Html', 'Form', 'Javascript');
-	var $uses = array('Peer', 'Tag', 'CollectionFile' , 'Queue.QueuedTask');
+	var $uses = array('Peer', 'Tag', 'CollectionFile' , 'Queue.QueuedTask', 'Setting');
 
 	function index() {
 		$this->Peer->recursive = 0;
@@ -153,67 +153,87 @@ class PeersController extends AppController {
 		exit;
 	}
 
-    function __cmd_pony($argv = array()) {
-        $ponyText = "<pre>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        o
-                               o       /
-                                \     /
-                                 \   /
-                                  \ /
-                    +--------------v-------------+
-                    |  __________________      @ |
-                    | /                  \       |  GET ME THE FUCK
-                    | |             ,--, |  (\)  |  OUT OF HERE
-                    | |       _ ___/ /\| |       |
-                    | |   ,;`( )__, )  ~ |  (-)  |
-                    | |  //  //   '--;   |       |
-                    | \  '  -\     |    /  :|||: |
-                    |  -oo---------------  :|||: |
-                    +----------------------------+
-                       []                    []
-
-
-
+	function __cmd_pony($argv = array()) {
+		$ponyText = "<pre>
+										o
+							   o	   /
+								\	  /
+								 \	 /
+								  \ /
+					+--------------v-------------+
+					|  __________________	   @ |
+					| /					 \		 |	GET ME THE FUCK
+					| |				,--, |	(\)	 |	OUT OF HERE
+					| |		  _ ___/ /\| |		 |
+					| |	  ,;`( )__, )  ~ |	(-)	 |
+					| |	 //	 //	  '--;	 |		 |
+					| \	 '	-\	   |	/  :|||: |
+					|  -oo---------------  :|||: |
+					+----------------------------+
+					   []					 []
 </pre>";
 
-        return array('text' => $ponyText, 'clear' => true, 'flash' => 'ponies are awesome!');
-    }
+		return array('text' => $ponyText, 'clear' => true, 'flash' => 'ponies are awesome!');
+	}
+
+	function __cmd_clear() {
+		return array('clear' => true);
+	}
 
 	function __cmd_help($argv = array()) {
 		$helpText = "<pre>
 
 
-                    help                    - show this very informative message
-                    settings                - show settings menu
-                    set (var) (value)       - apply a new setting
+					help					- show this very informative message
+					clear					- clear the screen
 
-
+					settings				- show settings menu
+					set (var) (value)		- apply a new setting
 </pre>";
 
 		return array('text' => $helpText, 'clear' => true);
 	}
 
 	function __cmd_set($argv = array()) {
-		if(count($argv) != 2) {
-			$str = "Set takes exactly two args";
+		if(count($argv) > 2) {
+			$str = "Too many arguments";
 		} else {
-			$str = "What exactly do you know about gitrbug?";
+			if(empty($argv)) {
+				$settings = $this->Setting->find('list', array('fields' => array('name', 'value')));
+
+				$str = "<pre>
+                    node_name               - <span id='_s_node_name' class='_s_editable'>{$settings['node_name']}</span>
+                    ip_addr                 - <span id='_s_ip_addr' class='_s_noneditable'>{$settings['ip_addr']}</span>
+                    port                    - <span id='_s_port' class='_s_noneditable'>{$settings['node_port']}</span>
+                    max_uls                 - <span id='_s_max_uls' class='_s_editable'>{$settings['max_uls']}</span>
+                    max_dls                 - <span id='_s_max_dls' class='_s_editable'>{$settings['max_dls']}</span>
+                    collection_dir          - <span id='_s_collection_dir' class='_s_editable'>{$settings['collection_dir']}</span>
+				</pre>";
+//				$str = print_r($settings, true);
+			} else {
+				if($setting = $this->Setting->find('first', array('conditions' => array('name' => $argv[0])))) {
+					if(count($argv) == 1) {
+						$str = "<pre>\n" . sprintf("%20s%-24s - %s", null, $setting['Setting']['name'], $setting['Setting']['value']) . "\n\n</pre>";
+					} else {
+						if(!in_array($argv[0], array('node_port', 'ip_addr'))) {
+							$this->Setting->id = $setting['Setting']['id'];
+							if($this->Setting->saveField('value', $argv[1])) {
+								$str = "Set {$argv[0]}";
+							} else {
+								$str = "Failed to set {$argv[0]}";
+								$str = print_r($setting, true);
+								$str = print_r($this->Setting, true);
+							}
+						} else {
+							$str = "Unable to set {$argv[0]}";
+						}
+					}
+				} else {
+					$str = "No such setting {$argv[0]}";
+				}
+			}
 		}
-		return array('text' => $str);
+		return array('text' => $str, 'bind' => true);
 	}
 
 	function view($id = null) {

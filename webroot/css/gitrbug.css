@@ -50,7 +50,7 @@ div#footer {
 //    margin: 8px;
 }
 
-pre,p { 
+pre,p {
     margin:0;
     padding:0;
     line-height: 110%;
@@ -69,10 +69,10 @@ pre,p {
 }
 
 #cl_flash {
-    
+
 }
 
-#cli {
+input {
     width:100%;
     background-color: #000;
     color: #FFFA73;

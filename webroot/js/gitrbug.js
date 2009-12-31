@@ -117,16 +117,42 @@ function cwrite(data, target) {
     $(target).append(cline);
 }
 
-function handle_key(e) {
-    $('#cl_flash').text(e.which);
+function _s_edit(e) {
+    if(inputs['_s_editor']) {
+        inputs['_s_editor'].afterSubmit();
+    }
+    $(this).replaceWith("<input id='_s_editor' type='text' name='" + this.id + "' value='" + $(this).text() + "' />");
+    edit_id = this.id.substr(3);
 
-    if(e.ctrlKey) {
-//        alert('hotkeys not implemented yet');
-    } else {
-        switch(e.which) {
-            case 13:
-                if("#" + e.target.id == input) {
-                    $.post(input_cmd, { data: $(input).val() }, function(r) {
+    inputs['_s_editor'] = {
+        cmd: '/peers/cmd',
+        preData: 'set ' + edit_id,
+        afterSubmit: function() {
+            $('#_s_editor').replaceWith("<span id='" + $('#_s_editor').attr('name') + "' class='_s_editable'>" + $('#_s_editor').val() + "</span>");
+        }
+    }
+    $('#_s_editor').focus();
+    $('#_s_editor').select();
+    apply_binds();
+}
+
+function apply_binds() {
+    $('#cl_buffer ._s_editable').bind("click", _s_edit);
+}
+
+function submit_input(id) {
+    if(!inputs[id]) return false;
+
+    if(!inputs[id]) {
+        alert("no input handler for" + id);
+        return false;
+    }
+
+    postData = $('#'+id).val();
+    if(inputs[id].preData) postData = inputs[id].preData + ' ' + postData;
+    if(inputs[id].postData) postData = postData + ' ' + inputs[id].postData;
+
+    $.post(inputs[id].cmd, { data: postData }, function(r) {
                         if(r.clear) {
                             $('#cl_buffer').empty();
                         }
@@ -140,9 +166,26 @@ function handle_key(e) {
                         if(r.text) {
                             buf_out(r.text);
                         }
+                        if(r.bind) {
+                            apply_binds();
+                        }
                     }, 'json');
-                    $('#cli').val('');
-                }
+    if(inputs[id].afterSubmit) {
+        inputs[id].afterSubmit();
+    } else {
+        $('#'+id).val('');
+    }
+}
+
+function handle_key(e) {
+    $('#cl_flash').text(e.which);
+
+    if(e.ctrlKey) {
+//        alert('hotkeys not implemented yet');
+    } else {
+        switch(e.which) {
+            case 13:
+                submit_input(e.target.id);
                 break;
             case 8: // BACKSPACE
 //                $(input).val($(input).val().substr(0, $(input).val().length-1));
@@ -166,8 +209,12 @@ function handle_key(e) {
     }
 }
 
-input = '#cli';
-input_cmd = '/peers/cmd';
+inputs = {
+    cli: {
+        cmd: '/peers/cmd'
+    }
+}
+
 buffer_height = 0;
 scroll_position = 0;
 
@@ -203,9 +250,8 @@ function refresh_buffer() {
 }
 
 $(document).ready(function() {
-    $(document).bind('keypress', handle_key);
-
     decorate();
+    $(document).bind('keypress', handle_key);
     $('#cl_buffer').bind('mousewheel', function(e, d) {
                              mdir = d>0?1:-1;
                              scroll_position = scroll_position + mdir;
