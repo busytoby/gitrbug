@@ -1,0 +1,13 @@
+Package: gitrbug-installer
+Version: 0.1
+Section: net
+Priority: optional
+Architecture: all
+Installed-Size: 28
+Maintainer: jas Osborne <busytoby@gmail.com>
+Description: Installer for the Gitrbug P2P system
+ This package provides an initial installation mechanism for
+ the Gitrbug P2P system.
+ 
+ More information at
+ http://gitrbug.com

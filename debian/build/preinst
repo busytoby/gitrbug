@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$1" = install ]; then
+    cd /usr/share/php
+    git clone http://github.com/busytoby/gitrbug.git
+    chown www-data.www-data -R gitrbug/tmp
+fi

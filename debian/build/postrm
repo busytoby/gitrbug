@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$1" = remove ]; then
+    rm -rf /usr/share/php/gitrbug
+    rm -rf /etc/lighttpd/conf-enabled/93-gitrbug.conf
+    /etc/init.d/lighttpd force-reload
+fi
