@@ -5,6 +5,7 @@ Priority: optional
 Architecture: all
 Installed-Size: 28
 Maintainer: jas Osborne <busytoby@gmail.com>
+Depends: lighttpd (>= 1.4.10), sqlite3 (>= 3.6.0), cakephp (>= 1.2.4), git-core (>= 1.6.5)
 Description: Installer for the Gitrbug P2P system
  This package provides an initial installation mechanism for
  the Gitrbug P2P system.

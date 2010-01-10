@@ -19,7 +19,12 @@ set -e
 
 case "$1" in
     configure)
-        lighty-enable-mod simple-vhost
+        cd /usr/share/php
+        git clone http://github.com/busytoby/gitrbug.git
+        chown www-data.www-data -R gitrbug/tmp
+        chown www-data.www-data -R gitrbug/db
+
+        lighty-enable-mod magnet
         ln -s /etc/lighttpd/conf-available/93-gitrbug.conf /etc/lighttpd/conf-enabled
         /etc/init.d/lighttpd force-reload
     ;;
