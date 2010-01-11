@@ -20,12 +20,13 @@ set -e
 case "$1" in
     configure)
         cd /usr/share/php
-        git clone http://github.com/busytoby/gitrbug.git
+        git clone http://github.com/busytoby/gitrbug.git || (cd gitrbug && git pull)
         chown www-data.www-data -R gitrbug/tmp
         chown www-data.www-data -R gitrbug/db
 
         lighty-enable-mod magnet
-        ln -s /etc/lighttpd/conf-available/93-gitrbug.conf /etc/lighttpd/conf-enabled
+        lighty-enable-mod fastcgi
+        [ ! -x "/etc/lighttpd/conf-enabled/93-gitrbug.conf" ] || ln -s /etc/lighttpd/conf-available/93-gitrbug.conf /etc/lighttpd/conf-enabled
         /etc/init.d/lighttpd force-reload
     ;;
 
