@@ -1,10 +1,12 @@
 <?php
 class DATABASE_CONFIG {
-
 	var $default = array(
 		'driver' => 'sqlite3',
 		'persistent' => false,
-		'database' => '/home/jas/src/gitrbug/db/gitrbug.dat',
 	);
+
+    function __construct() {
+        $this->default['database'] = ROOT . DS . APP_DIR . DS . 'db' . DS . 'gitrbug.dat';
+    }
 }
 ?>

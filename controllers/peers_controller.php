@@ -155,22 +155,23 @@ class PeersController extends AppController {
 
 	function __cmd_pony($argv = array()) {
 		$ponyText = "<pre>
-										o
-							   o	   /
-								\	  /
-								 \	 /
-								  \ /
-					+--------------v-------------+
-					|  __________________	   @ |
-					| /					 \		 |	GET ME THE FUCK
-					| |				,--, |	(\)	 |	OUT OF HERE
-					| |		  _ ___/ /\| |		 |
-					| |	  ,;`( )__, )  ~ |	(-)	 |
-					| |	 //	 //	  '--;	 |		 |
-					| \	 '	-\	   |	/  :|||: |
-					|  -oo---------------  :|||: |
-					+----------------------------+
-					   []					 []
+\n\n
+\t\t\t\t\t\t\to
+\t\t\t\t\to\t       /
+\t\t\t\t\t \\\t      /
+\t\t\t\t\t  \\\t     /
+\t\t\t\t\t   \\\t    /
+\t\t\t\t+--------------v-------------+
+\t\t\t\t|  __________________	   @ |
+\t\t\t\t| /\t\t     \\\t     |\tGET ME THE FUCK
+\t\t\t\t| |\t\t,--, |\t(\)  |\tOUT OF HERE
+\t\t\t\t| |\t  _ ___/ /\| |       |
+\t\t\t\t| |  ,;`( )__, )   ~ |	(-)  |
+\t\t\t\t| | //	 //  '--;    |       |
+\t\t\t\t| \ '	-\    |      / :|||: |
+\t\t\t\t|  -oo---------------  :|||: |
+\t\t\t\t+----------------------------+
+\t\t\t\t      []\t\t[]
 </pre>";
 
 		return array('text' => $ponyText, 'clear' => true, 'flash' => 'ponies are awesome!');
@@ -182,13 +183,21 @@ class PeersController extends AppController {
 
 	function __cmd_help($argv = array()) {
 		$helpText = "<pre>
+  \t\t () = required, [] = optional
 
+  \t\t help\t\t\t\t - show this very informative message
+  \t\t clear\t\t\t\t - clear the screen
 
-					help					- show this very informative message
-					clear					- clear the screen
+  \t\t set [var [value]]\t\t - apply a new setting
 
-					settings				- show settings menu
-					set (var) (value)		- apply a new setting
+//\t\t greet (ip) [port]\t\t - add a peer by address
+
+//\t\t scan\t\t\t\t - scan or update the local collection
+//\t\t stats\t\t\t\t - show collection and transfer statistics
+//\t\t transfers\t\t\t - show ongoing transfers
+
+//\t\t download [url]\t\t\t - queue DMP by location or open file browser
+
 </pre>";
 
 		return array('text' => $helpText, 'clear' => true);
@@ -202,12 +211,12 @@ class PeersController extends AppController {
 				$settings = $this->Setting->find('list', array('fields' => array('name', 'value')));
 
 				$str = "<pre>
-                    node_name               - <span id='_s_node_name' class='_s_editable'>{$settings['node_name']}</span>
-                    ip_addr                 - <span id='_s_ip_addr' class='_s_noneditable'>{$settings['ip_addr']}</span>
-                    port                    - <span id='_s_port' class='_s_noneditable'>{$settings['node_port']}</span>
-                    max_uls                 - <span id='_s_max_uls' class='_s_editable'>{$settings['max_uls']}</span>
-                    max_dls                 - <span id='_s_max_dls' class='_s_editable'>{$settings['max_dls']}</span>
-                    collection_dir          - <span id='_s_collection_dir' class='_s_editable'>{$settings['collection_dir']}</span>
+		node_name\t - <span id='_s_node_name' class='_s_editable'>{$settings['node_name']}</span>
+		ip_addr\t\t - <span id='_s_ip_addr' class='_s_noneditable'>{$settings['ip_addr']}</span>
+		port\t\t - <span id='_s_port' class='_s_noneditable'>{$settings['node_port']}</span>
+		max_uls\t\t - <span id='_s_max_uls' class='_s_editable'>{$settings['max_uls']}</span>
+		max_dls\t\t - <span id='_s_max_dls' class='_s_editable'>{$settings['max_dls']}</span>
+		collection_dir\t - <span id='_s_collection_dir' class='_s_editable'>{$settings['collection_dir']}</span>
 				</pre>";
 //				$str = print_r($settings, true);
 			} else {
